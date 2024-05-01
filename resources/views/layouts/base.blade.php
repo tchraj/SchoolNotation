@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Windmill Dashboard</title>
+    <title>School Notation</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/tailwind.output.css') }}" />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -21,7 +21,7 @@
         <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
             <div class="py-4 text-gray-500 dark:text-gray-400">
                 <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-                    Windmill
+                    Univ Notation
                 </a>
                 <ul class="mt-6">
                     <li class="relative px-6 py-3">
@@ -42,7 +42,7 @@
                 <ul>
                     <li class="relative px-6 py-3">
                         <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                            href="forms.html">
+                            href="{{ route('univs.list') }}">
                             <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
@@ -87,7 +87,7 @@
                             <span class="ml-4">Utilisateurs</span>
                         </a>
                     </li>
-                    <li class="relative px-6 py-3">
+                    {{-- <li class="relative px-6 py-3">
                         <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                             href="modals.html">
                             <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
@@ -108,15 +108,14 @@
                             </svg>
                             <span class="ml-4">Tables</span>
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="relative px-6 py-3">
                         <button
                             class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                             @click="togglePagesMenu" aria-haspopup="true">
                             <span class="inline-flex items-center">
                                 <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                                     <path
                                         d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z">
                                     </path>
@@ -485,9 +484,9 @@
                                             <span>Settings</span>
                                         </a>
                                     </li>
-                                    <li class="flex">
-                                        <a class="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        <li class="flex">
+                                            @csrf
                                             <svg class="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -495,9 +494,15 @@
                                                     d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1">
                                                 </path>
                                             </svg>
-                                            <span>Log out</span>
-                                        </a>
-                                    </li>
+                                            <x-dropdown-link :href="route('logout')"
+                                                onclick="event.preventDefault();
+                                                                this.closest('form').submit();">
+                                                {{ __('Log Out') }}
+                                            </x-dropdown-link>
+
+
+                                        </li>
+                                    </form>
                                 </ul>
                             </template>
                         </li>
@@ -507,6 +512,10 @@
             <main class="h-full overflow-y-auto">
                 <div class="container px-6 mx-auto grid">
                     <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                        @auth
+                            {{ __('Bienvenue !') }}
+                        @endauth
+
                         @yield('content')
                     </h2>
 
