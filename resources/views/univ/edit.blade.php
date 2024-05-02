@@ -20,7 +20,14 @@
                             placeholder="Université de lomé" name="univ_name" id="univ_name"
                             value="{{ $univ->univ_name }}" />
                     </label>
-
+                    <label class="block text-sm" for="logo">
+                        <span class="text-gray-700 dark:text-gray-400 text-base">
+                            Logo
+                        </span>
+                        <input accept="image/*" type="file" value="{{ $univ->logo }}"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="logo" id="logo" />
+                    </label>
                     <div class="mt-4 text-sm">
                         <span class="text-gray-700 dark:text-gray-400 text-base">
                             Type d'université
@@ -144,7 +151,7 @@
                     <div class="flex justify-center items-center">
                         <button type="submit"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-6 rounded">
-                            Créer
+                            Modifier
                         </button>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ class University extends Model
 {
     use HasFactory, HasApiTokens, Notifiable;
     protected $table = 'universities';
-    protected $fillable = ['univ_name', 'address','city_id', 'type', 'contacts','mails', 'websites', 'formations'];
+    protected $fillable = ['univ_name', 'logo', 'address', 'city_id', 'type', 'contacts', 'mails', 'websites', 'formations'];
 
     public function commentaires()
     {
@@ -54,5 +54,11 @@ class University extends Model
     public function setFormationsAttribute($value)
     {
         $this->attributes['formations'] = json_encode($value);
+    }
+
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
     }
 }

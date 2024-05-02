@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Critere;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Composer;
@@ -11,8 +12,10 @@ class UniversityController extends Controller
 {
     public function list()
     {
-        $univ = University::all();
-        return view('univ.list', compact('univ'));
+        // $univs = University::all();
+        $univs = University::with('city')->get();
+        $criteria = Critere::all();
+        return view('univ.list', compact(['univs','criteria']));
     }
 
     public function create()
@@ -25,6 +28,17 @@ class UniversityController extends Controller
     public function store(Request $request)
     {
         $univ = new University();
+        // if ($request->hasFile('logo')) {
+        //     // Récupère le fichier téléchargé
+        //     $logo = $request->file('logo');
+    
+        //     // Déplace le fichier téléchargé vers le dossier de stockage approprié (par exemple, le dossier "public/storage")
+        //     $path = $logo->store('logos', 'public');
+    
+        //     // Stocke le chemin du fichier dans la base de données
+        //     $univ->logo = $path;
+        // }
+        $univ->logo = $request->logo;
         $univ->univ_name = $request->univ_name;
         $univ->contacts = json_encode($request->input('contacts'));
         $univ->formations = $request->input('formations');
@@ -56,6 +70,17 @@ class UniversityController extends Controller
     {
         
         $univ = University::find($id);
+        $univ->logo = $request->logo;
+        // if ($request->hasFile('logo')) {
+        //     // Récupère le fichier téléchargé
+        //     $logo = $request->file('logo');
+    
+        //     // Déplace le fichier téléchargé vers le dossier de stockage approprié (par exemple, le dossier "public/storage")
+        //     $path = $logo->store('logos', 'public');
+    
+        //     // Stocke le chemin du fichier dans la base de données
+        //     $univ->logo = $path;
+        // }
         $univ->univ_name = $request->univ_name;
         $univ->contacts = json_encode($request->input('contacts'));
         $univ->formations = $request->input('formations');

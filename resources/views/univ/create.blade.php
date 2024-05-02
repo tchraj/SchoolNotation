@@ -4,7 +4,7 @@
     @endphp
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid py-6 " style="background-color: #0ea5e9">
-            <form action="{{ route('univs.store') }}" method="POST" class="mt-6">
+            <form enctype="multipart/form-data" action="{{ route('univs.store') }}" method="POST" class="mt-6">
                 @csrf
                 <h4 class="mb-4 font-semibold text-white">
                     Ajouter une nouvelle université
@@ -16,6 +16,14 @@
                         </span> <input required
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                             placeholder="Université de lomé" name="univ_name" id="univ_name" />
+                    </label>
+                    <label class="block text-sm" for="logo">
+                        <span class="text-gray-700 dark:text-gray-400 text-base">
+                            Logo
+                        </span>
+                        <input accept="image/*" type="file"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                            name="logo" id="logo" />
                     </label>
 
                     <div class="mt-4 text-sm">

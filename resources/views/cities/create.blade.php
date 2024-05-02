@@ -36,7 +36,7 @@
         @tailwind components;
         @tailwind utilities;
     </style>
-    <div class="bg-white shadow-md rounded-md p-4 mx-auto max-w-sm mt-16">
+    <div class="bg-white shadow-md rounded-md p-4 mx-auto max-w-sm mt-2">
         <h2 class="text-xl font-semibold mb-4">Les villes de nos universités</h2>
         {{-- <div class="pagination">
             {{ $cities->links() }}

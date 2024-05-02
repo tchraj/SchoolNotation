@@ -3,6 +3,7 @@
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\CritereController;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
@@ -52,3 +53,13 @@ Route::post('/univs/store', [UniversityController::class, 'store'])->name('univs
 Route::get('/univs/{id}', [UniversityController::class, 'edit'])->name('univs.edit');
 Route::put('/univs/{id}', [UniversityController::class, 'update'])->name('univs.update');
 Route::delete('/univs/{id}', [UniversityController::class, 'delete'])->name('univs.delete');
+
+
+
+
+// Route::get('/criteria', [CritereController::class, 'list'])->name('criteria.list');
+Route::get('criteria/create', [CritereController::class, 'create'])->name('criteria.create');
+Route::post('/criteria/store', [CritereController::class, 'store'])->name('criteria.store');
+Route::get('/criteria/{id}', [CritereController::class, 'edit'])->name('criteria.edit');
+Route::put('/criteria/{id}', [CritereController::class, 'update'])->name('criteria.update');
+Route::delete('/criteria/{id}', [CritereController::class, 'delete'])->name('criteria.delete');
