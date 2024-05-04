@@ -11,8 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notations', function (Blueprint $table) {
-            $table->unsignedBigInteger('criteria_id')->after('score');
+        Schema::table('notations',function(Blueprint $table){
             $table->foreign('criteria_id')->references('id')
                 ->on('criteria');
             $table->removeColumn('qualite_ens');
@@ -28,13 +27,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notations', function (Blueprint $table) {
-            $table->removeColumn('criteria_id');
+        Schema::table('notations',function(Blueprint $table){
             $table->integer('qualite_ens');
             $table->integer('infra');
             $table->integer('diversite_inclusion');
             $table->integer('recherche_innov');
             $table->integer('insert_prof');
         });
+        
     }
 };

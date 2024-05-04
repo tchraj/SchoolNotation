@@ -22,11 +22,11 @@ class CritereController extends Controller
     }
     public function store(Request $request)
     {
-        $city = new Critere();
-        $city->city_name = $request->city_name;
-        $city->save();
+        $critere = new Critere();
+        $critere->libelle = $request->libelle;
+        $critere->description = $request->description;
+        $critere->save();
         return back();
-        // return view('criteria.create');
     }
     public function edit(int $id)
     {

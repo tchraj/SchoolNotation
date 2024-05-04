@@ -4,6 +4,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\CritereController;
+use App\Http\Controllers\NotationController;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
@@ -37,13 +38,18 @@ require __DIR__ . '/auth.php';
 
 
 //Routes du modele City
+Route::middleware(['auth','admin'])->group(
+    function() {
+        Route::get('/cities', [CityController::class, 'list'])->name('cities.list');
+        Route::get('cities/create', [CityController::class, 'create'])->name('cities.create');
+        Route::post('/cities/store', [CityController::class, 'store'])->name('cities.store');
+        Route::get('/cities/{id}', [CityController::class, 'edit'])->name('cities.edit');
+        Route::put('/cities/{id}', [CityController::class, 'update'])->name('cities.update');
+        Route::delete('/cities/{id}', [CityController::class, 'delete'])->name('cities.delete');
 
-Route::get('/cities', [CityController::class, 'list'])->name('cities.list');
-Route::get('cities/create', [CityController::class, 'create'])->name('cities.create');
-Route::post('/cities/store', [CityController::class, 'store'])->name('cities.store');
-Route::get('/cities/{id}', [CityController::class, 'edit'])->name('cities.edit');
-Route::put('/cities/{id}', [CityController::class, 'update'])->name('cities.update');
-Route::delete('/cities/{id}', [CityController::class, 'delete'])->name('cities.delete');
+    }
+);
+
 
 //Routes du modele University
 
@@ -56,6 +62,7 @@ Route::delete('/univs/{id}', [UniversityController::class, 'delete'])->name('uni
 
 
 
+//Routes du modele critere
 
 // Route::get('/criteria', [CritereController::class, 'list'])->name('criteria.list');
 Route::get('criteria/create', [CritereController::class, 'create'])->name('criteria.create');
@@ -63,3 +70,13 @@ Route::post('/criteria/store', [CritereController::class, 'store'])->name('crite
 Route::get('/criteria/{id}', [CritereController::class, 'edit'])->name('criteria.edit');
 Route::put('/criteria/{id}', [CritereController::class, 'update'])->name('criteria.update');
 Route::delete('/criteria/{id}', [CritereController::class, 'delete'])->name('criteria.delete');
+
+
+//Routes du modele notations
+
+Route::get('/notations', [NotationController::class, 'list'])->name('notations.list');
+Route::get('notations/create', [NotationController::class, 'create'])->name('notations.create');
+Route::post('/notations/store', [NotationController::class, 'store'])->name('notations.store');
+Route::get('/notations/{id}', [NotationController::class, 'edit'])->name('notations.edit');
+Route::put('/notations/{id}', [NotationController::class, 'update'])->name('notations.update');
+Route::delete('/notations/{id}', [NotationController::class, 'delete'])->name('v.delete');
