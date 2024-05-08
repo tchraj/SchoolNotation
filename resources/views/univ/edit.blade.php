@@ -12,14 +12,27 @@
                     Modifier l'université {{ $univ->univ_name }}
                 </h4>
                 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-                    <label class="block text-sm" for="univ_name">
-                        <span class="text-gray-700 dark:text-gray-400 text-base">
-                            Designation
-                        </span> <input required
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="Université de lomé" name="univ_name" id="univ_name"
-                            value="{{ $univ->univ_name }}" />
-                    </label>
+                    
+                    <div style="display:flex;">
+                        <label class="block text-sm" for="univ_name" style="margin-right: 20px;">
+                            <span class="text-gray-700 dark:text-gray-400 text-base">
+                                Designation
+                            </span> 
+                            <input required value="{{ $univ->univ_name }}"
+                                class="block mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="Université de Lomé" name="univ_name" id="univ_name" />
+                        </label>
+                    
+                        <label class="block text-sm" for="description">
+                            <span class="text-gray-700 dark:text-gray-400 text-base">
+                                Description
+                            </span> 
+                            <textarea name="description" cols="50" rows="5" required value="{{ $univ->description }}"
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                 ></textarea>
+                        </label>
+                    </div>
+                    
                     <label class="block text-sm" for="logo">
                         <span class="text-gray-700 dark:text-gray-400 text-base">
                             Logo

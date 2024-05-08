@@ -4,24 +4,45 @@
     @endphp
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid py-6 " style="background-color: #0ea5e9">
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <form enctype="multipart/form-data" action="{{ route('univs.store') }}" method="POST" class="mt-6">
                 @csrf
                 <h4 class="mb-4 font-semibold text-white">
                     Ajouter une nouvelle université
                 </h4>
                 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-                    <label class="block text-sm" for="univ_name">
-                        <span class="text-gray-700 dark:text-gray-400 text-base">
-                            Designation
-                        </span> <input required
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="Université de lomé" name="univ_name" id="univ_name" />
-                    </label>
+
+                    <div style="display:flex;">
+                        <label class="block text-sm" for="univ_name" style="margin-right: 20px;">
+                            <span class="text-gray-700 dark:text-gray-400 text-base">
+                                Designation
+                            </span> 
+                            <input required
+                                class="block mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="Université de Lomé" name="univ_name" id="univ_name" />
+                        </label>
+                    
+                        <label class="block text-sm" for="description">
+                            <span class="text-gray-700 dark:text-gray-400 text-base">
+                                Description
+                            </span> 
+                            <textarea name="description" cols="50" rows="5" required
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                 id="description"></textarea>
+                        </label>
+                    </div>
+                    
+
                     <label class="block text-sm" for="logo">
                         <span class="text-gray-700 dark:text-gray-400 text-base">
                             Logo
                         </span>
-                        <input accept="image/*" type="file"
+                        <input  accept="image/*" type="file"
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                             name="logo" id="logo" />
                     </label>

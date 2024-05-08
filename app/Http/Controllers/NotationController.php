@@ -23,18 +23,29 @@ class NotationController extends Controller
     }
     public function store(Request $request)
     {
+
         $univ_id = $request->input('univ_id');
         $user_id = $request->input('user_id');
         $scores = $request->input('scores');
         foreach ($scores as $critere_id => $score) {
-            $notation = new Notation();
-            $notation->criteria_id = $critere_id;
-            $notation->univ_id = $univ_id;
-            $notation->users_id = $user_id;
-            $notation->score = $score;
-            $notation->save();
-            return redirect()->route('notations.list');
+            $noteExiste = Notation::where('users_id', $user_id)
+                ->where('univ_id', $univ_id)
+                ->where('criteria_id', $critere_id)
+                ->first();
+            if ($noteExiste) {
+                $noteExiste->score = $score;
+                $noteExiste->save();
+            } else {
+                $notation = new Notation();
+                $notation->criteria_id = $critere_id;
+                $notation->univ_id = $univ_id;
+                $notation->users_id = $user_id;
+                $notation->score = $score;
+                $notation->save();
+            }
         }
+
+        return back()->with('success', 'Notations enregistrée avec succes');
         // $notation = new Notation();
         // $user = Auth::user();
         // $data = $request->all();

@@ -13,7 +13,7 @@ class University extends Model
     protected $table = 'universities';
     protected $fillable = ['univ_name', 'logo', 'address', 'city_id', 'type', 'contacts', 'mails', 'websites', 'formations'];
 
-    public function commentaires()
+    public function comments()
     {
         return $this->hasMany(Comment::class);
     }

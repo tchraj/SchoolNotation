@@ -4,6 +4,15 @@
         // $univ = App\Models\University::find(1);
     @endphp
     <style>
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        .rating button {
+            font-size: 24px;
+            /* Taille des étoiles */
+        }
+
         .modal {
             display: none;
             position: absolute;
@@ -38,6 +47,29 @@
             cursor: pointer;
         }
     </style>
+    @if (session('success'))
+        <div id="success-message" class="text-blue-900 text-sm bg-blue-700 p-4 rounded shadow-md">
+            {{ session('success') }}
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 5000); // Masquer le message après 5 secondes
+                }
+            });
+        </script>
+    @endif
+
+
+    <button class="text-white bg-blue-500 rounded-2 p-2 ml-80 flex-end">
+        <a href="{{ route('univs.create') }}">Nouvelle université</a>
+
+
+    </button>
     <h1 class="mb-4 font-bold ">
         Nos universités
     </h1>
@@ -49,15 +81,17 @@
                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th class="px-4 py-3">Nom</th>
                         <th class="px-4 py-3">Type</th>
-                        <th class="px-4 py-3">Adresse</th>
+                        {{-- <th class="px-4 py-3">Adresse</th> --}}
                         <th class="px-4 py-3">Ville</th>
                         <th class="px-4 py-3">Actions</th>
+                        <th class="px-4 py-3">Comm</th>
                         <th class="px-4 py-3">Evaluer</th>
+
 
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                    @foreach ($univs as $item)
+                    @foreach ($univers as $item)
                         <tr class="text-gray-700 dark:text-gray-400">
                             <td class="px-4 py-3">
                                 <div class="flex items-center text-sm">
@@ -75,12 +109,12 @@
                             <td class="px-4 py-3 text-sm">
                                 {{ $item->type }}
                             </td>
-                            <td class="px-4 py-3 text-xs">
+                            {{-- <td class="px-4 py-3 text-xs">
                                 <span
                                     class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
                                     {{ $item->address }}
                                 </span>
-                            </td>
+                            </td> --}}
                             <td class="px-4 py-3 text-sm">
                                 {{ $item->city->city_name }}
                             </td>
@@ -111,62 +145,216 @@
                                     </a>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
-                                <!-- HTML -->
-                                <div id="myModal" class="modal">
-                                    <div class="modal-content">
-                                        <span class="close" onclick="closeModal()">&times;</span>
-                                        <h2 class="text-bold text-base mb-1">Noter une université</h2>
-                                        <form class="my-4 py-4 mt-6 px-6 mb-6" method="POST"
-                                            action="{{ route('notations.store') }}">
-                                            @csrf
-                                            <!-- Champs cachés pour les informations constantes -->
-                                            <input type="hidden" name="univ_id" value="{{ $item->id }}">
-                                            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                            @foreach ($criteria as $critere)
-                                                <label class=""
-                                                    for="critere_{{ $critere->id }}">{{ $critere->libelle }} :</label>
-                                                <input type="range" id="critere_{{ $critere->id }}"
-                                                    name="scores[{{ $critere->id }}]" min="0" max="10"
-                                                    class="border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500"
-                                                    step="1">
-                                                <br><br>
-                                            @endforeach
-                                            <button type="submit"
-                                                class="px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                                Noter
-                                            </button>
-                                        </form>
+                            <td>
+                                {{-- <button type="button" data-toggle="modal" data-target="#exampleModalCenter"
+                                    style="background-color: rgb(251, 255, 13)"
+                                    class="flex items-center justify-between px-2 py-1 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                                    aria-label="Comment">
+                                    <i class="fas fa-comment">...</i>
+                                    <dd>{{ var_dump($item->id) }}</dd>
+
+                                </button> --}}
+                                <button type="button" data-toggle="modal"
+                                    data-target="#exampleModalCenter-{{ $item->id }}"
+                                    style="background-color: rgb(251, 255, 13)"
+                                    class="flex items-center justify-between px-2 py-1 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                                    aria-label="Comment">
+                                    <i class="fas fa-comment">...</i>
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModalCenter-{{ $item->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 style="font-size: 25px" class="modal-title" id="exampleModalLongTitle">
+                                                    Commentaire
+                                                </h1>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                <form id="commentForm-{{ $item->id }}"
+                                                    action="{{ route('comments.store') }}" method="post"
+                                                    class="max-w-md mx-auto my-10">
+                                                    @csrf
+                                                    <input type="hidden" name="univ_id" value="{{ $item->id }}">
+                                                    <label for="content"
+                                                        class="block text-sm mt-4 font-medium text-gray-700">Votre
+                                                        commentaire :</label>
+                                                    <textarea name="content" rows="5" required
+                                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Fermer</button>
+                                                <button type="submit" form="commentForm-{{ $item->id }}"
+                                                    class="btn btn-primary">Envoyer</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Button to open the modal -->
-                                <button onclick="openModal()">Noter</button>
+                            </td>
+                            <td>
+                                <button type="button" data-toggle="modal" data-target="#ratingModal-{{ $item->id }}"
+                                    class="flex items-center justify-between px-2 py-1 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                                    aria-label="Noter">
+                                    <i class="fas fa-star mr-2"></i> Noter
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="ratingModal-{{ $item->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="ratingModalLabel-{{ $item->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="ratingModalLabel-{{ $item->id }}">Noter
+                                                    l'université</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ route('notations.store') }}" method="POST">
+                                                    @csrf
+                                                    @foreach ($criteria as $critere)
+                                                        <h5>{{ $critere->libelle }} :</h5>
+                                                        <input type="range" min="0" max="100"
+                                                            step="1" name="scores[{{ $critere->id }}]"
+                                                            class="bg-gray-200 appearance-none rounded h-2">
+                                                    @endforeach
+                                                    <input type="hidden" name="univ_id" value="{{ $item->id }}">
+                                                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Fermer</button>
+                                                <button type="submit" class="btn btn-primary">Valider</button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </td>
+                            {{-- <td class="px-4 py-3">
+                                <form action="{{ route('notations.store') }}" method="POST">
+                                    @csrf
+                                    @foreach ($criteria as $critere)
+                                        <h5>{{ $critere->libelle }} :</h5>
+                                        <input type="range" min="0" max="100" step="1"
+                                            name="scores[{{ $critere->id }}]"
+                                            class="bg-gray-200 appearance-none rounded h-2">
+                                    @endforeach
+                                    <input type="hidden" name="univ_id" value="{{ $item->id }}">
+                                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+
+                                    <button type="submit" class="text-green-500 hover:text-green-700">
+                                        <i class="fas fa-check-circle mr-2"></i> Valider
+                                    </button>
+                                </form>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
+                <div>
+                    {{ $univers->links() }}
+                </div>
             </table>
 
-        </div>
-    </div>
-
-    </div>
-    <script>
-        // JavaScript
-        function openModal() {
-            document.getElementById("myModal").style.display = "block";
-        }
-
-        function closeModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        function submitForm() {
 
 
-            closeModal();
-        }
-    </script>
-@endsection
+            {{-- <div id="successModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="bg-white p-6 rounded-lg shadow-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold">Succès !</h2>
+                            <button @click="showSuccessModal = false"
+                                class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <p id="successMessage" class="text-gray-700"></p>
+                    </div>
+                </div>
+            </div> --}}
+
+
+
+
+
+
+            <script>
+                $(document).ready(function() {
+                    // Soumettre le formulaire via AJAX lorsqu'il est soumis
+                    $('form[id^="commentForm-"]').submit(function(e) {
+                        e.preventDefault();
+                        var formData = $(this).serialize();
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            type: 'POST',
+                            data: formData,
+                            success: function(data) {
+                                // Afficher un message de succès
+                                alert('Commentaire ajouté avec succès !');
+                                // Effacer le contenu du champ de commentaire
+                                $(this).find('textarea[name="content"]').val('');
+                                // Fermer le modal
+                                $(this).closest('.modal').modal('hide');
+                            },
+                            console.log(data);
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                                alert('Une erreur est survenue lors de l\'ajout du commentaire.');
+                            }
+                        });
+                    });
+                });
+                $(document).ready(function() {
+                            // Soumettre le formulaire via AJAX lorsqu'il est soumis
+                            $('form[action="{{ route('notations.store') }}"]').submit(function(e) {
+                                e.preventDefault();
+                                var formData = $(this).serialize();
+                                $.ajax({
+                                    url: $(this).attr('action'),
+                                    type: 'POST',
+                                    data: formData,
+                                    success: function(data) {
+                                        // Afficher un message de succès
+                                        showSuccessModal('Notation enregistrée avec succès !');
+                                        // Fermer le modal
+                                        $('#ratingModal-{{ $item->id }}').modal('hide');
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(error);
+                                        alert(
+                                            'Une erreur est survenue lors de l\'enregistrement de la notation.'
+                                        );
+                                    }
+                                });
+                            });
+                            // function showSuccessModal(message) {
+                            //     var modal = document.getElementById('successModal');
+                            //     var successMessage = document.getElementById('successMessage');
+                            //     successMessage.innerText = message;
+                            //     modal.classList.remove('hidden');
+                            // }
+
+                            // function hideSuccessModal() {
+                            //     var modal = document.getElementById('successModal');
+                            //     modal.classList.add('hidden');
+                            }
+            </script>
+        @endsection

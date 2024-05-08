@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class checkRole
 {
     /**
      * Handle an incoming request.
@@ -15,6 +15,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (auth()->user()->role == "admin") {
+            return $next($request);
+        }
+
+        session()->flash('error', 'Vous n\'avez pas accès à cette page.');
+
         return $next($request);
     }
 }

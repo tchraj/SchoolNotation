@@ -3,19 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Comment;
 use App\Models\Critere;
+use App\Models\Notation;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Auth;
 
 class UniversityController extends Controller
 {
+    public function details($univ_id)
+    {
+        $univ = University::find($univ_id);
+        if ($univ) {
+            $comments = $univ->comments()->get();
+        }
+        $user_id = Auth::id();
+        $criteria = Critere::all();
+        $formations = $univ->formations;
+        $authors = []; // Tableau pour stocker les auteurs des commentaires
+        foreach ($comments as $comment) {
+            $authors[] = $comment->user; // Ajoute l'utilisateur à la liste des auteurs
+        }
+        $notations = Notation::where('users_id', $user_id)->get();
+        return view('univ.infos', compact(['univ', 'comments', 'univ_id', 'formations', 'authors', 'criteria','notations']));
+    }
+
+    public function welcome()
+    {
+        $universities = University::all();
+        return view('welcome', compact(['universities']));
+    }
     public function list()
     {
         // $univs = University::all();
         $univs = University::with('city')->get();
         $criteria = Critere::all();
-        return view('univ.list', compact(['univs','criteria']));
+        $univers = University::paginate(5);
+        return view('univ.list', compact(['univs', 'criteria', 'univers']));
     }
 
     public function create()
@@ -31,10 +57,10 @@ class UniversityController extends Controller
         // if ($request->hasFile('logo')) {
         //     // Récupère le fichier téléchargé
         //     $logo = $request->file('logo');
-    
+
         //     // Déplace le fichier téléchargé vers le dossier de stockage approprié (par exemple, le dossier "public/storage")
         //     $path = $logo->store('logos', 'public');
-    
+
         //     // Stocke le chemin du fichier dans la base de données
         //     $univ->logo = $path;
         // }
@@ -45,13 +71,17 @@ class UniversityController extends Controller
         $univ->type = $request->type;
         $univ->address = $request->address;
         $univ->city_id = $request->city;
+        $univ->description  = $request->description;
         $univ->mails = $request->input('mails');
         $univ->websites = $request->input('websites');
         $univ->save();
-        return view('univ.list');
+        $univers = University::all();
+        $criteria = Critere::all();
+        return view('univ.list', compact(['univers', 'criteria']));
     }
     public function edit(int $id)
-    {   $cities = City::all();
+    {
+        $cities = City::all();
         $univ = University::find($id);
         // $citie = $cities->where('id','=',$univ->city_id)->first()->name;
         // $mail_dec = json_decode($univ->mails);
@@ -60,24 +90,24 @@ class UniversityController extends Controller
         // dd(json_decode($univ->websites));
         $cont_decode = json_decode($univ->contacts);
         if (!isset($cont_decode)) {
-            $cont_decode= (object)[];
+            $cont_decode = (object)[];
         }
         // dd($cont_decode);
-        return view("univ.edit",compact(['univ','cities','cont_decode']));
+        return view("univ.edit", compact(['univ', 'cities', 'cont_decode']));
         // dd($univ->formations);
     }
     public function update(Request $request, $id)
     {
-        
+
         $univ = University::find($id);
         $univ->logo = $request->logo;
         // if ($request->hasFile('logo')) {
         //     // Récupère le fichier téléchargé
         //     $logo = $request->file('logo');
-    
+
         //     // Déplace le fichier téléchargé vers le dossier de stockage approprié (par exemple, le dossier "public/storage")
         //     $path = $logo->store('logos', 'public');
-    
+
         //     // Stocke le chemin du fichier dans la base de données
         //     $univ->logo = $path;
         // }
@@ -87,6 +117,7 @@ class UniversityController extends Controller
         $univ->type = $request->type;
         $univ->address = $request->address;
         $univ->city_id = $request->city;
+        $univ->description  = $request->description;
         $univ->mails = $request->input('mails');
         $univ->websites = $request->input('websites');
         $univ->save();

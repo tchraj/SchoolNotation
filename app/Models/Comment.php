@@ -11,12 +11,14 @@ class Comment extends Model
     protected $table = 'comments';
     protected $hidden = ['_token'];
     protected $guarded = ['_token'];
-    protected $fillable = ['content'];
-    
-    public function user() {
-        return $this->belongsTo(User::class);
+    protected $fillable = ['content', 'univ_id', 'users_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
-    public function university(){
+    public function university()
+    {
         return $this->belongsTo(University::class);
-        }
+    }
 }
