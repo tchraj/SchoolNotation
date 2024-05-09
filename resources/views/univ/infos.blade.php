@@ -275,7 +275,8 @@ https://templatemo.com/tm-586-scholar
                         <!-- ***** Serach Start ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="#top" class="active">Acceuil</a></li>
+                            <li class="scroll-to-section"><a href="{{ route('welcome') }}#top"
+                                    class="active">Acceuil</a></li>
                             <li class="scroll-to-section"><a href="#mesnotations">Mes notations</a></li>
                             <li class="scroll-to-section"><a href="{{ route('welcome') }}#courses">Universités</a></li>
                             {{-- <li class="scroll-to-section"><a href="#team">Commentaires</a></li> --}}
@@ -554,8 +555,19 @@ https://templatemo.com/tm-586-scholar
 
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex flex-row align-items-center">
-                                            <span class="mr-2">{{ $authors[$key]->name }}</span>
-                                            <small class="c-badge">Top Comment</small>
+                                            <span class="mr-2">
+                                                @php
+                                                    $user = Auth::user();
+                                                @endphp
+                                                @if ($user->name == $authors[$key]->name)
+                                                    <span style="background-color: rgb(218, 255, 218)">Vous</span>
+                                                @else
+                                                    {{ $authors[$key]->name }}
+                                                @endif
+
+
+                                            </span>
+                                            {{-- <small class="c-badge">Top Comment</small> --}}
                                         </div>
                                         <small>{{ $comment->upload_date }}</small>
                                     </div>
@@ -674,8 +686,8 @@ https://templatemo.com/tm-586-scholar
 
     <!-- Scripts -->
     <!-- Bootstrap core JavaScript -->
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    {{-- <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script> --}}
     <script src="{{ asset('js/isotope.min.js') }}"></script>
     <script src="{{ asset('js/owl-carousel.js') }}"></script>
     <script src="{{ asset('js/counter.js') }}"></script>

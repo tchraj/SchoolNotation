@@ -84,8 +84,8 @@
                         {{-- <th class="px-4 py-3">Adresse</th> --}}
                         <th class="px-4 py-3">Ville</th>
                         <th class="px-4 py-3">Actions</th>
-                        <th class="px-4 py-3">Comm</th>
-                        <th class="px-4 py-3">Evaluer</th>
+                        {{-- <th class="px-4 py-3">Comm</th> --}}
+                        {{-- <th class="px-4 py-3">Evaluer</th> --}}
 
 
                     </tr>
@@ -203,23 +203,21 @@
                                 </div>
 
                             </td>
-                            <td>
-                                <button type="button" data-toggle="modal" data-target="#ratingModal-{{ $item->id }}"
+                            {{-- <td>
+                                <button type="button" data-toggle="modal" data-target="#ratingModal-{{ $univ->id }}"
                                     class="flex items-center justify-between px-2 py-1 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
-                                    aria-label="Noter">
+                                    aria-label="Noter" style="background-color:#f9b234;border-width:0">
                                     <i class="fas fa-star mr-2"></i> Noter
                                 </button>
                                 <!-- Modal -->
-                                <div class="modal fade" id="ratingModal-{{ $item->id }}" tabindex="-1"
-                                    role="dialog" aria-labelledby="ratingModalLabel-{{ $item->id }}"
-                                    aria-hidden="true">
+                                <div class="modal fade" id="ratingModal-{{ $univ->id }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="ratingModalLabel-{{ $univ->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="ratingModalLabel-{{ $item->id }}">Noter
+                                                <h5 class="modal-title" id="ratingModalLabel-{{ $univ->id }}">Noter
                                                     l'université</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -228,16 +226,15 @@
                                                     @csrf
                                                     @foreach ($criteria as $critere)
                                                         <h5>{{ $critere->libelle }} :</h5>
-                                                        <input type="range" min="0" max="100"
-                                                            step="1" name="scores[{{ $critere->id }}]"
+                                                        <input type="range" min="0" max="100" step="1"
+                                                            name="scores[{{ $critere->id }}]"
                                                             class="bg-gray-200 appearance-none rounded h-2">
                                                     @endforeach
-                                                    <input type="hidden" name="univ_id" value="{{ $item->id }}">
+                                                    <input type="hidden" name="univ_id" value="{{ $univ->id }}">
                                                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Fermer</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                                                 <button type="submit" class="btn btn-primary">Valider</button>
                                             </div>
                                             </form>
@@ -245,7 +242,7 @@
                                     </div>
                                 </div>
 
-                            </td>
+                            </td> --}}
                             {{-- <td class="px-4 py-3">
                                 <form action="{{ route('notations.store') }}" method="POST">
                                     @csrf

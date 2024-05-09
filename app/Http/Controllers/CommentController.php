@@ -12,7 +12,7 @@ class CommentController extends Controller
 
     public function list()
     {
-        $comments = Comment::all();
+        $comments = Comment::orderBy('upload_date', 'desc')->get();
         return view('comments.list', compact(['comments']));
     }
 

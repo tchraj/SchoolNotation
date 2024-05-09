@@ -13,6 +13,35 @@ use Illuminate\Support\Facades\Auth;
 
 class UniversityController extends Controller
 {
+
+    public function home_classement($critereId)
+    {
+        $criteres = Critere::all();
+        $universites = University::all();
+        $notations = Notation::where('criteria_id', $critereId)->get();
+        $notationsGroupedByUniversity = $notations->groupBy('univ_id');
+
+        // Calculer le total des points pour chaque université
+        $classement = [];
+        foreach ($notationsGroupedByUniversity as $univId => $notations) {
+            $totalPoints = $notations->sum('score');
+            $classement[$univId] = $totalPoints;
+        }
+
+        // Trier les universités en fonction des points de notation
+        arsort($classement);
+
+        // Retourner le classement sous forme de vue partielle
+        return view('classements.partial', [
+            'classement' => $classement,
+            'universites' => $universites,
+            'criteres' => $criteres,
+        ])->render();
+    }
+    public function home()
+    {
+        return view('home');
+    }
     public function details($univ_id)
     {
         $univ = University::find($univ_id);
@@ -27,14 +56,43 @@ class UniversityController extends Controller
             $authors[] = $comment->user; // Ajoute l'utilisateur à la liste des auteurs
         }
         $notations = Notation::where('users_id', $user_id)->get();
-        return view('univ.infos', compact(['univ', 'comments', 'univ_id', 'formations', 'authors', 'criteria','notations']));
+        return view('univ.infos', compact(['univ', 'comments', 'univ_id', 'formations', 'authors', 'criteria', 'notations']));
     }
 
-    public function welcome()
+    public function welcome($critere_id = null)
     {
         $universities = University::all();
-        return view('welcome', compact(['universities']));
+        // $selectedCritereId = 1;
+        $criteres = Critere::all();
+
+        // Si aucun critère n'est spécifié, utilisez l'identifiant du premier critère
+        if (!$critere_id && $criteres->isNotEmpty()) {
+            $critere_id = $criteres->first()->id;
+        }
+
+        // $universites = University::all();
+        $notations = Notation::where('criteria_id', $critere_id)->get();
+        $notationsGroupedByUniversity = $notations->groupBy('univ_id');
+
+        // Calculer le total des points pour chaque université
+        $classement = [];
+        foreach ($notationsGroupedByUniversity as $univId => $notations) {
+            $totalPoints = $notations->sum('score');
+            $classement[$univId] = $totalPoints;
+        }
+        $univs = University::all();
+        // Trier les universités en fonction des points de notation
+        arsort($classement);
+        $universities = [];
+        $points = [];
+
+        foreach ($classement as $univId => $totalPoints) {
+            $universite = University::find($univId);
+            $universities[] = $universite->univ_name;
+            $points[] = $totalPoints;
+        return view('welcome', compact(['universities','criteres','univs']));
     }
+}
     public function list()
     {
         // $univs = University::all();

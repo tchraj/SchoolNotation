@@ -37,12 +37,12 @@
         @tailwind components;
         @tailwind utilities;
     </style>
-    <div class="bg-white shadow-md rounded-md p-4 mx-auto max-w-sm mt-2">
-        <h2 class="text-xl font-semibold mb-4">Les criteres de notation</h2>
+    {{-- <div class="bg-white shadow-md rounded-md p-4 mx-auto max-w-sm mt-2"> --}}
+        <h2 class="text-2xl font-semibold mb-4">Les criteres de notation</h2>
         {{-- <div class="pagination">
             {{ $criteria->links() }}
         </div>         --}}
-        <ul>
+        {{-- <ul>
             @foreach ($criteria as $critere)
                 <li class="flex items-center justify-between py-2 border-b border-gray-300">
                     <div class="flex items-center">
@@ -53,14 +53,27 @@
                     <span class="text-green-500 font-semibold text-sm">{{ $critere->description }}</span>
                 </li>
             @endforeach
-        </ul>
+        </ul> --}}
+        <table class="shadow-lg bg-white border-separate mb-6">
+            <tr>
+              <th class="bg-blue-500 border text-center px-3 py-4">N.</th>
+              <th class="bg-blue-500 border text-center px-3 py-4">Nom</th>
+              <th class="bg-blue-500 border text-center px-3 py-4">Description</th>
+            </tr>
+            @foreach ($criteria as $critere)
+            <tr>
+              <td class="border px-8 py-4">{{ $critere->id }}</td>
+              <td class="border px-8 py-4">{{ $critere->libelle }}</td>
+              <td class="border px-8 py-4">{{ $critere->description }}</td>
+            </tr>
+            @endforeach
+          </table>
         <div>
             {{ $criteria->links() }}
         </div>
 
 
 
-    </div>
     <script>
         tailwind.config = {
             darkMode: 'class',

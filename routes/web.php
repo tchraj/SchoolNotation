@@ -6,7 +6,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\CritereController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotationController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
@@ -21,11 +23,29 @@ use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 |
 */
 
-Route::get('/', [UniversityController::class, 'welcome'])->name('welcome');
+// Route::get('/',function(){
+//     return view('home');
+// });
+Route::get('/role', [HomeController::class, 'getRole'])->name('role');
 
-Route::get('/home', function () {
-    return view('home')->name('home');
-});
+Route::middleware('checkRole')->get('/home', [UniversityController::class, 'welcome'])->name('home');
+
+
+// Route::middleware('checkRole')->get('/home', function () {
+//     // Cette route sera accessible uniquement après la vérification du rôle de l'utilisateur
+//     return view('welcome');
+// })->name('home');
+
+Route::get('/dashboard', function () {
+    // Cette route sera accessible uniquement pour les administrateurs
+    return view('dashboard');
+})->name('dashboard');
+
+
+
+Route::get('/', function () {
+    return view('home');
+})->name('welcome');
 
 Route::get('/dashboard', function () {
     return view('layouts.base');
@@ -37,21 +57,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
 
 
 
 //Routes du modele City
-Route::middleware(['auth', 'admin'])->group(
-    function () {
-        Route::get('/cities', [CityController::class, 'list'])->name('cities.list');
-        Route::get('cities/create', [CityController::class, 'create'])->name('cities.create');
-        Route::post('/cities/store', [CityController::class, 'store'])->name('cities.store');
-        Route::get('/cities/{id}', [CityController::class, 'edit'])->name('cities.edit');
-        Route::put('/cities/{id}', [CityController::class, 'update'])->name('cities.update');
-        Route::delete('/cities/{id}', [CityController::class, 'delete'])->name('cities.delete');
-    }
-);
+// Route::middleware(['auth', 'admin'])->group(
+// function () {
+Route::get('/cities', [CityController::class, 'list'])->name('cities.list');
+Route::get('cities/create', [CityController::class, 'create'])->name('cities.create');
+Route::post('/cities/store', [CityController::class, 'store'])->name('cities.store');
+Route::get('/cities/{id}', [CityController::class, 'edit'])->name('cities.edit');
+Route::put('/cities/{id}', [CityController::class, 'update'])->name('cities.update');
+Route::delete('/cities/{id}', [CityController::class, 'delete'])->name('cities.delete');
+// }
+// );
 
 
 //Routes du modele University
@@ -62,7 +81,7 @@ Route::post('/univs/store', [UniversityController::class, 'store'])->name('univs
 Route::get('/univs/{id}', [UniversityController::class, 'edit'])->name('univs.edit');
 Route::put('/univs/{id}', [UniversityController::class, 'update'])->name('univs.update');
 Route::delete('/univs/{id}', [UniversityController::class, 'delete'])->name('univs.delete');
-Route::get('/univs/details/{univ_id}',[UniversityController::class,'details'])->name('univs.details');
+Route::get('/univs/details/{univ_id}', [UniversityController::class, 'details'])->name('univs.details');
 
 
 
@@ -98,14 +117,16 @@ Route::get(
     [ClassementController::class, 'partiel']
 )->name('classements.critere');
 
+Route::get('/home/{critere_id}', [ClassementController::class, 'home_class_part'])->name('classements.home_part');
+
+Route::get('/classements', [ClassementController::class, 'index'])->name('classements.index');
 
 Route::get(
-    '/classements',
-    [ClassementController::class, 'index']
-)->name('classements.index');
+    '/home/classements',
+    [ClassementController::class, 'home_class']
+)->name('classements.home');
 
-
-Route::post('/classements', [ClassementController::class, 'getClassement']);
+Route::get('/classements/get-classement-by-categorie/{critereId}', [ClassementController::class, 'getClassementByCategorie'])->name('classements.getClassementByCategorie');
 
 
 Route::get('/comments', [CommentController::class, 'list'])->name('comments.list');
@@ -117,3 +138,8 @@ Route::delete('/comments/{id}', [CommentController::class, 'delete'])->name('com
 
 
 
+// GESTION DES UTILISATEURS
+
+Route::get('/users', [UsersController::class, 'list'])->name('users.list');
+
+require __DIR__ . '/auth.php';

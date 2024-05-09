@@ -87,9 +87,20 @@ https://templatemo.com/tm-586-scholar
                             <li class="scroll-to-section"><a href="#top" class="active">Acceuil</a></li>
                             <li class="scroll-to-section"><a href="#services">Infos</a></li>
                             <li class="scroll-to-section"><a href="#courses">Universités</a></li>
-                            {{-- <li class="scroll-to-section"><a href="#team">Commentaires</a></li> --}}
-                            <li class="scroll-to-section"><a href="{{ route('register') }}">S'inscrire</a></li>
-                            <li class="scroll-to-section"><a href="{{ route('login') }}">Connectez vous!</a></li>
+                            <li class="scroll-to-section"><a href="#classements">Classements</a></li>
+                            <li class="scroll-to-section"><a href="#team">Commentaires</a></li>
+                                                     <li class="scroll-to-section">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                        this.closest('form').submit();">
+                                        {{ __('Log out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </li>
+                            {{-- <li class="scroll-to-section"><a href="{{ route('logout') }}">Logout</a></li> --}}
+
                         </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -114,11 +125,11 @@ https://templatemo.com/tm-586-scholar
                                 <p>Une plateforme vous permettant de consulter, noter, commenter des universités et bien
                                     d'autres choses !!!</p>
                                 <div class="buttons">
-                                    <div class="main-button">
-                                        <a href="#">Découvrir</a>
+                                    <div class="">
+                                        <a href="#"></a>
                                     </div>
-                                    <div class="icon-button">
-                                        <a href="#"><i class="fa fa-play"></i> What's Scholar?</a>
+                                    <div class="">
+                                        <a href="#"></a>
                                     </div>
                                 </div>
                             </div>
@@ -221,10 +232,9 @@ https://templatemo.com/tm-586-scholar
                     </div>
                 </div>
             </div>
-
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    @foreach ($universities as $item)
+                    @foreach ($univs as $item)
                         <div class="swiper-slide">
                             <div class="events_item">
                                 <div class="thumb">
@@ -251,7 +261,311 @@ https://templatemo.com/tm-586-scholar
             </div>
         </div>
     </section>
+    {{-- <section class="section classements" id="classements">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading">
+                        <h6>Classement des Universités</h6>
+                        <h2>Classement des Universités</h2>
+                    </div>
+                </div>
+            </div>
+            <ul class="event_filter">
+                @foreach ($criteres as $critere)
+                    <li>
+                        <a href="{{ route('classements.index', ['critere_id' => $critere->id]) }}"
+                            class="{{ $loop->index == $critere->id ? 'is_active' : '' }}">{{ $critere->libelle }}</a>
+                    </li>
+                    </li>
+                @endforeach
+            </ul>
+            @php
+                $critere_id = null;
+                $criteres = App\Models\Critere::all();
 
+                // Si aucun critère n'est spécifié, utilisez l'identifiant du premier critère
+                if (!$critere_id && $criteres->isNotEmpty()) {
+                    $critere_id = $criteres->first()->id;
+                }
+                $notations = App\Models\Notation::where('criteria_id', $critere_id)->get();
+                $notationsGroupedByUniversity = $notations->groupBy('univ_id');
+
+                // Calculer le total des points pour chaque université
+                $classement = [];
+                foreach ($notationsGroupedByUniversity as $univId => $notations) {
+                    $totalPoints = $notations->sum('score');
+                    $classement[$univId] = $totalPoints;
+                }
+
+                // Trier les universités en fonction des points de notation
+                arsort($classement);
+                $universities = [];
+                $points = [];
+
+                foreach ($classement as $univId => $totalPoints) {
+                    $universite = App\Models\University::find($univId);
+                    $universities[] = $universite->univ_name;
+                    $points[] = $totalPoints;
+                }
+            @endphp
+            <div class="row event_box">
+                @foreach ($classement as $univId => $totalPoints)
+                    @php
+                        $universite = App\Models\University::find($univId);
+                    @endphp
+                    <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6">
+                        <div class="events_item">
+                            <div class="thumb">
+                                <a href="#"><img src="{{ asset('img/logos/'.$universite->logo) }}" alt=""></a>
+                                <span style="background-color:rgb(49, 68, 240);color:white;" class="category">{{ $totalPoints }} points</span>
+                                
+                            </div>
+                            <div class="down-content">
+                                <span class="author">{{ $universite->univ_name }}</span>
+                                <h4>{{ $universite->univ_name }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section> --}}
+
+
+    <section class="section classements" id="classements">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading">
+                        <h6>CLASSEMENTS</h6>
+                        <h2>Classement des Universités</h2>
+                    </div>
+                </div>
+            </div>
+            @php
+                $critere_id = null;
+                $criteres = App\Models\Critere::all();
+
+                // Si aucun critère n'est spécifié, utilisez l'identifiant du premier critère
+                if (!$critere_id && $criteres->isNotEmpty()) {
+                    $critere_id = $criteres->first()->id;
+                }
+                $notations = App\Models\Notation::where('criteria_id', $critere_id)->get();
+                $notationsGroupedByUniversity = $notations->groupBy('univ_id');
+
+                // Calculer le total des points pour chaque université
+                $classement = [];
+                foreach ($notationsGroupedByUniversity as $univId => $notations) {
+                    $totalPoints = $notations->sum('score');
+                    $classement[$univId] = $totalPoints;
+                }
+
+                // Trier les universités en fonction des points de notation
+                arsort($classement);
+                $universities = [];
+                $points = [];
+
+                foreach ($classement as $univId => $totalPoints) {
+                    $universite = App\Models\University::find($univId);
+                    $universities[] = $universite->univ_name;
+                    $points[] = $totalPoints;
+                }
+            @endphp
+            <ul class="event_filter">
+                @foreach ($criteres as $critere)
+                    <li>
+                        <a href="#" class="critere-link {{ $critere->id == $critere_id ? 'is_active' : '' }}"
+                            data-critere-id="{{ $critere->id }}">{{ $critere->libelle }}</a>
+                    </li>
+                @endforeach
+            </ul>
+
+            <div id="classement-container">
+                @include('classements.partials.classement', [
+                    'classement' => $classement,
+                    'critereId' => $critere_id,
+                ])
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section classements" id="classements">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading">
+                        <h6>CLASSEMENTS</h6>
+                        <h2>Classement des Universités</h2>
+                    </div>
+                </div>
+            </div>
+            <ul class="event_filter">
+                @foreach ($criteres as $critere)
+                    <li>
+                        <a href="#" class="critere-link {{ $critere->id == $critere_id ? 'is_active' : '' }}"
+                            data-critere-id="{{ $critere->id }}">{{ $critere->libelle }}</a>
+                    </li>
+                @endforeach
+            </ul>
+
+            <div id="classement-container">
+                @include('classements.partials.classement', [
+                    'classement' => $classement,
+                    'critereId' => $critere_id,
+                ])
+            </div>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.critere-link').click(function(e) {
+                e.preventDefault(); // Empêche le comportement par défaut du lien
+
+                var critereId = $(this).data('critere-id');
+                // Effectuez une requête AJAX pour récupérer les données de classement correspondantes
+                $.ajax({
+                    url: "{{ route('classements.getClassementByCategorie', ':critereId') }}"
+                        .replace(':critereId', critereId), // URL de la page d'accueil
+                    type: 'GET',
+                    data: {
+                        critere_id: critereId
+                    }, // Paramètres de requête
+                    success: function(response) {
+                        // Mettez à jour la section de classement avec les données reçues
+                        $('#classements').html(response);
+                        // Recharge les critères
+                        $('.event_filter').load(location.href + ' .event_filter');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- <section class="section classements" id="classements">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="section-heading">
+                        <h6>Latest Courses</h6>
+                        <h2>Latest Courses</h2>
+                    </div>
+                </div>
+            </div>
+            <ul class="event_filter">
+                <li>
+                    <a class="is_active" href="#!" data-filter="*">Show All</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".design">Webdesign</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".development">Development</a>
+                </li>
+                <li>
+                    <a href="#!" data-filter=".wordpress">Wordpress</a>
+                </li>
+            </ul>
+            <div class="row event_box">
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-01.jpg" alt=""></a>
+                            <span class="category">Webdesign</span>
+                            <span class="price">
+                                <h6><em>$</em>160</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">Stella Blair</span>
+                            <h4>Learn Web Design</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6  development">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-02.jpg" alt=""></a>
+                            <span class="category">Development</span>
+                            <span class="price">
+                                <h6><em>$</em>340</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">Cindy Walker</span>
+                            <h4>Web Development Tips</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design wordpress">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-03.jpg" alt=""></a>
+                            <span class="category">Wordpress</span>
+                            <span class="price">
+                                <h6><em>$</em>640</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">David Hutson</span>
+                            <h4>Latest Web Trends</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 development">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-04.jpg" alt=""></a>
+                            <span class="category">Development</span>
+                            <span class="price">
+                                <h6><em>$</em>450</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">Stella Blair</span>
+                            <h4>Online Learning Steps</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 wordpress development">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-05.jpg" alt=""></a>
+                            <span class="category">Wordpress</span>
+                            <span class="price">
+                                <h6><em>$</em>320</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">Sophia Rose</span>
+                            <h4>Be a WordPress Master</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 wordpress design">
+                    <div class="events_item">
+                        <div class="thumb">
+                            <a href="#"><img src="assets/images/course-06.jpg" alt=""></a>
+                            <span class="category">Webdesign</span>
+                            <span class="price">
+                                <h6><em>$</em>240</h6>
+                            </span>
+                        </div>
+                        <div class="down-content">
+                            <span class="author">David Hutson</span>
+                            <h4>Full Stack Developer</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> --}}
     <footer>
         <div class="container">
             <div class="col-lg-12">
@@ -261,6 +575,33 @@ https://templatemo.com/tm-586-scholar
             </div>
         </div>
     </footer>
+
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.critere-link').click(function(e) {
+            e.preventDefault(); // Empêche le comportement par défaut du lien
+
+            var critereId = $(this).data('critere-id');
+            // Effectuez une requête AJAX pour récupérer les données de classement correspondantes
+            $.ajax({
+                url: "{{ route('classements.getClassementByCategorie', ':critereId') }}"
+                            .replace(':critereId', critereId), // URL de la page d'accueil
+                type: 'GET',
+                data: {
+                    critere_id: critereId
+                }, // Paramètres de requête
+                success: function(response) {
+                    // Mettez à jour la section de classement avec les données reçues
+                    $('#classements').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script> --}}
 
     <!-- Scripts -->
     <!-- Bootstrap core JavaScript -->
