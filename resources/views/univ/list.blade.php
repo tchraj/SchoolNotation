@@ -64,7 +64,45 @@
         </script>
     @endif
 
+    @if (session('success'))
+        <script>
+            // Récupérer le message de succès depuis la variable de session
+            var successMessage = '{{ session('success') }}';
 
+            // Créer une boîte de dialogue personnalisée
+            var successDialog = document.createElement('div');
+            successDialog.classList.add('success-dialog');
+            successDialog.innerHTML = '<div class="success-dialog-content">' + successMessage + '</div>';
+
+            // Ajouter la boîte de dialogue au document
+            document.body.appendChild(successDialog);
+
+            // Fermer la boîte de dialogue après 3 secondes
+            setTimeout(function() {
+                document.body.removeChild(successDialog);
+            }, 3000);
+        </script>
+
+        <style>
+            .success-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #4CAF50;
+                color: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            }
+
+            .success-dialog-content {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+    @endif
     <button class="text-white bg-blue-500 rounded-2 p-2 ml-80 flex-end">
         <a href="{{ route('univs.create') }}">Nouvelle université</a>
 
@@ -131,8 +169,10 @@
                                             </svg>
                                         </button>
                                     </a>
-                                    <a href="{{ route('univs.delete', [$item->id]) }}">
-                                        <button
+                                    <form action="{{ route('univs.delete', [$item->id]) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
                                             class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                                             aria-label="Delete"
                                             onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')"">
@@ -142,7 +182,7 @@
                                                     clip-rule="evenodd"></path>
                                             </svg>
                                         </button>
-                                    </a>
+                                    </form>
                                 </div>
                             </td>
                             <td>
@@ -263,9 +303,9 @@
                         </tr>
                     @endforeach
                 </tbody>
-                <div>
+                {{-- <div>
                     {{ $univers->links() }}
-                </div>
+                </div> --}}
             </table>
 
 
@@ -319,39 +359,5 @@
                         });
                     });
                 });
-                $(document).ready(function() {
-                            // Soumettre le formulaire via AJAX lorsqu'il est soumis
-                            $('form[action="{{ route('notations.store') }}"]').submit(function(e) {
-                                e.preventDefault();
-                                var formData = $(this).serialize();
-                                $.ajax({
-                                    url: $(this).attr('action'),
-                                    type: 'POST',
-                                    data: formData,
-                                    success: function(data) {
-                                        // Afficher un message de succès
-                                        showSuccessModal('Notation enregistrée avec succès !');
-                                        // Fermer le modal
-                                        $('#ratingModal-{{ $item->id }}').modal('hide');
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error(error);
-                                        alert(
-                                            'Une erreur est survenue lors de l\'enregistrement de la notation.'
-                                        );
-                                    }
-                                });
-                            });
-                            // function showSuccessModal(message) {
-                            //     var modal = document.getElementById('successModal');
-                            //     var successMessage = document.getElementById('successMessage');
-                            //     successMessage.innerText = message;
-                            //     modal.classList.remove('hidden');
-                            // }
-
-                            // function hideSuccessModal() {
-                            //     var modal = document.getElementById('successModal');
-                            //     modal.classList.add('hidden');
-                            }
             </script>
         @endsection

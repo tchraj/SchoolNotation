@@ -22,6 +22,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css">
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
@@ -88,8 +89,13 @@ https://templatemo.com/tm-586-scholar
                             <li class="scroll-to-section"><a href="#services">Infos</a></li>
                             <li class="scroll-to-section"><a href="#courses">Universités</a></li>
                             <li class="scroll-to-section"><a href="#classements">Classements</a></li>
-                            <li class="scroll-to-section"><a href="#team">Commentaires</a></li>
-                                                     <li class="scroll-to-section">
+                            <li class="scroll-to-section"><a href="{{ route('profile.edit') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white"
+                                        viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                        <path
+                                            d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z" />
+                                    </svg></a></li>
+                            <li class="scroll-to-section">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <x-dropdown-link :href="route('logout')"
@@ -171,6 +177,46 @@ https://templatemo.com/tm-586-scholar
             </div>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            // Récupérer le message de succès depuis la variable de session
+            var successMessage = '{{ session('success') }}';
+
+            // Créer une boîte de dialogue personnalisée
+            var successDialog = document.createElement('div');
+            successDialog.classList.add('success-dialog');
+            successDialog.innerHTML = '<div class="success-dialog-content">' + successMessage + '</div>';
+
+            // Ajouter la boîte de dialogue au document
+            document.body.appendChild(successDialog);
+
+            // Fermer la boîte de dialogue après 3 secondes
+            setTimeout(function() {
+                document.body.removeChild(successDialog);
+            }, 3000);
+        </script>
+
+        <style>
+            .success-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #4CAF50;
+                color: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            }
+
+            .success-dialog-content {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+    @endif
+
 
     <div class="services section" id="services">
         <div class="container">
@@ -640,7 +686,15 @@ https://templatemo.com/tm-586-scholar
             },
         });
     </script>
+    <script>
+        import Swal from 'sweetalert2'
+    </script>
+    <!-- Lien vers les fichiers CSS de SweetAlert2 -->
 
+    <!-- Lien vers les fichiers JavaScript de SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.js"></script>
+
+    <script src="sweetalert2.all.min.js"></script>
 </body>
 
 </html>

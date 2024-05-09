@@ -12,7 +12,8 @@ class CommentController extends Controller
 
     public function list()
     {
-        $comments = Comment::orderBy('upload_date', 'desc')->get();
+        // $comments = Comment::orderBy('upload_date', 'desc')->get();
+        $comments = Comment::where('status', 'Actif')->orderBy('upload_date', 'asc')->get();
         return view('comments.list', compact(['comments']));
     }
 
@@ -31,7 +32,7 @@ class CommentController extends Controller
         $comment->upload_date = Carbon::now()->toDateString();
         // dd($comment->content);
         $comment->save();
-        return back()->with('success', 'Commentaire ajouté avec succès');
+        return back();
 
         // return response()->json(['success' => 'Commentaire ajouté avec succès !']);
     }
@@ -40,8 +41,22 @@ class CommentController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $comment = Comment::find($id);
+        if ($request->has('status') && $request->status == 'on') {
+            $comment->status = 'Actif';
+        } else {
+            $comment->status = 'Inactif';
+        }
+        $comment->save();
+        return back();
     }
     public function delete($id)
     {
+        $city = Comment::find($id);
+        $city->delete();
+        return view('univ.infos');
     }
+    // return redirect()->route('univs.details', $id);
+    // return response()->json(['success' => 'Commentaire ajouté avec succès !']);
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,8 +34,15 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        if (Auth::user()?->role == 'admin') {
+            return redirect()->intended(route('dashboard'))->with('succes', 'Opération réalisée avec succes');
+        } else {
+            // If user has admin or moderator role, he can see all users
+            // return redirect()->intended(route('users.index'));
+            return redirect()->intended(RouteServiceProvider::HOME)->with('succes', 'Opération réalisée avec succes');
+        }
+        // return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->back()->with('succes', 'Opération réalisée avec succes');
     }
 
     /**

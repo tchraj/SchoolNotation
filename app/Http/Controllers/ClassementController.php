@@ -54,28 +54,6 @@ class ClassementController extends Controller
         ]);
     }
 
-    // public function home_class_part($critereId)
-    // {
-    //     $criteres = Critere::all();
-    //     $universites = University::all();
-    //     $notations = Notation::where('criteria_id', $critereId)->get();
-    //     $notationsGroupedByUniversity = $notations->groupBy('univ_id');
-    //     $classement = [];
-    //     foreach ($notationsGroupedByUniversity as $univId => $notations) {
-    //         $totalPoints = $notations->sum('score');
-    //         $classement[$univId] = $totalPoints;
-    //     }
-
-    //     // Trier les universités en fonction des points de notation
-    //     arsort($classement);
-
-    //     // Retourner le classement sous forme de vue partielle
-    //     return view('classements.home', [
-    //         'classement' => $classement,
-    //         'universites' => $universites,
-    //         'criteres' => $criteres,
-    //     ])->render();
-    // }
 
 
     public function partiel($critereId)

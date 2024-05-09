@@ -23,13 +23,10 @@ use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 |
 */
 
-// Route::get('/',function(){
-//     return view('home');
-// });
 Route::get('/role', [HomeController::class, 'getRole'])->name('role');
 
-Route::middleware('checkRole')->get('/home', [UniversityController::class, 'welcome'])->name('home');
-
+// Route::middleware('checkRole')->get('/home', [UniversityController::class, 'welcome'])->name('home');
+Route::get('/home', [UniversityController::class, 'welcome'])->name('home');
 
 // Route::middleware('checkRole')->get('/home', function () {
 //     // Cette route sera accessible uniquement après la vérification du rôle de l'utilisateur
@@ -76,12 +73,13 @@ Route::delete('/cities/{id}', [CityController::class, 'delete'])->name('cities.d
 //Routes du modele University
 
 Route::get('/univs', [UniversityController::class, 'list'])->name('univs.list');
-Route::get('univs/create', [UniversityController::class, 'create'])->name('univs.create')->middleware('is_admin');
+Route::get('univs/create', [UniversityController::class, 'create'])->name('univs.create');
 Route::post('/univs/store', [UniversityController::class, 'store'])->name('univs.store');
 Route::get('/univs/{id}', [UniversityController::class, 'edit'])->name('univs.edit');
 Route::put('/univs/{id}', [UniversityController::class, 'update'])->name('univs.update');
 Route::delete('/univs/{id}', [UniversityController::class, 'delete'])->name('univs.delete');
 Route::get('/univs/details/{univ_id}', [UniversityController::class, 'details'])->name('univs.details');
+// Route::post('/univs/details/{univ_id}', [NotationController::class, 'noter'])->name('notations.store');
 
 
 
@@ -101,10 +99,10 @@ Route::delete('/criteria/{id}', [CritereController::class, 'delete'])->name('cri
 
 Route::get('/notations', [NotationController::class, 'list'])->name('notations.list');
 Route::get('notations/create', [NotationController::class, 'create'])->name('notations.create');
-Route::post('/notations/store', [NotationController::class, 'store'])->name('notations.store');
+Route::post('/notations/store/{univ_id}', [NotationController::class, 'store'])->name('notations.store');
 Route::get('/notations/{id}', [NotationController::class, 'edit'])->name('notations.edit');
 Route::put('/notations/{id}', [NotationController::class, 'update'])->name('notations.update');
-Route::delete('/notations/{id}', [NotationController::class, 'delete'])->name('v.delete');
+Route::delete('/notations/{id}', [NotationController::class, 'delete'])->name('notations.delete');
 
 
 Route::get(

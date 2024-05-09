@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Critere;
 use App\Models\Notation;
 use App\Models\University;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Auth;
@@ -38,25 +39,27 @@ class UniversityController extends Controller
             'criteres' => $criteres,
         ])->render();
     }
-    public function home()
-    {
-        return view('home');
-    }
+
     public function details($univ_id)
     {
         $univ = University::find($univ_id);
         if ($univ) {
-            $comments = $univ->comments()->get();
+            $comments = $univ->comments()->where('status', 'Actif')->get();
         }
         $user_id = Auth::id();
         $criteria = Critere::all();
         $formations = $univ->formations;
+        $contacts = json_decode($univ->contacts, true);
+        $contacts = array_filter($contacts, function ($contact) {
+            return !empty(trim($contact));
+        });
+        $univ->contacts = $contacts;
         $authors = []; // Tableau pour stocker les auteurs des commentaires
         foreach ($comments as $comment) {
             $authors[] = $comment->user; // Ajoute l'utilisateur à la liste des auteurs
         }
         $notations = Notation::where('users_id', $user_id)->get();
-        return view('univ.infos', compact(['univ', 'comments', 'univ_id', 'formations', 'authors', 'criteria', 'notations']));
+        return view('univ.infos', compact(['univ', 'comments', 'univ_id', 'formations', 'authors', 'criteria', 'notations', 'contacts']));
     }
 
     public function welcome($critere_id = null)
@@ -90,15 +93,15 @@ class UniversityController extends Controller
             $universite = University::find($univId);
             $universities[] = $universite->univ_name;
             $points[] = $totalPoints;
-        return view('welcome', compact(['universities','criteres','univs']));
+        }
+        return view('welcome', compact(['universities', 'criteres', 'univs']));
     }
-}
     public function list()
     {
         // $univs = University::all();
         $univs = University::with('city')->get();
         $criteria = Critere::all();
-        $univers = University::paginate(5);
+        $univers = University::all();
         return view('univ.list', compact(['univs', 'criteria', 'univers']));
     }
 
@@ -135,10 +138,11 @@ class UniversityController extends Controller
         $univ->save();
         $univers = University::all();
         $criteria = Critere::all();
-        return view('univ.list', compact(['univers', 'criteria']));
+        return view('univ.list', compact(['univers', 'criteria']))->with('success', 'Opération éffectuée avec succès');
     }
     public function edit(int $id)
     {
+        $id = (int)$id;
         $cities = City::all();
         $univ = University::find($id);
         // $citie = $cities->where('id','=',$univ->city_id)->first()->name;
@@ -179,7 +183,7 @@ class UniversityController extends Controller
         $univ->mails = $request->input('mails');
         $univ->websites = $request->input('websites');
         $univ->save();
-        return redirect()->route('univs.list');
+        return redirect()->route('univs.list')->with('success', 'Opération éffectuée avec succès');
     }
     public function delete($id)
     {

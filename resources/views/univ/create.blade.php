@@ -4,11 +4,45 @@
     @endphp
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid py-6 " style="background-color: #0ea5e9">
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+            @if (session('success'))
+            <script>
+                // Récupérer le message de succès depuis la variable de session
+                var successMessage = '{{ session('success') }}';
+        
+                // Créer une boîte de dialogue personnalisée
+                var successDialog = document.createElement('div');
+                successDialog.classList.add('success-dialog');
+                successDialog.innerHTML = '<div class="success-dialog-content">' + successMessage + '</div>';
+        
+                // Ajouter la boîte de dialogue au document
+                document.body.appendChild(successDialog);
+        
+                // Fermer la boîte de dialogue après 3 secondes
+                setTimeout(function() {
+                    document.body.removeChild(successDialog);
+                }, 3000);
+            </script>
+        
+            <style>
+                .success-dialog {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                    z-index: 9999;
+                }
+        
+                .success-dialog-content {
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+            </style>
+        @endif
 
             <form enctype="multipart/form-data" action="{{ route('univs.store') }}" method="POST" class="mt-6">
                 @csrf

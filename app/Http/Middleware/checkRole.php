@@ -18,13 +18,13 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check()) {
-            if (Auth::user()->role == 'admin') {
-                return redirect()->route('dashboard');
-            } elseif (Auth::user()->role == 'user') {
-                return redirect()->route('home');
-            }
-        }
+        // if (Auth::check()) {
+        //     if (Auth::user()->role == 'admin') {
+        //         return redirect()->route('dashboard');
+        //     } elseif (Auth::user()->role == 'user') {
+        //         return redirect()->route('home');
+        //     }
+        // }
 
         return $next($request);
     }

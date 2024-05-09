@@ -27,6 +27,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-BYNN3a4ZhIVAXHyMs5R8r1lKXZsK9M54pVk9rBvea5ff5KZ1QHMqg2F+qEtuICrTzkiwqtnWwFd66gk/nGFnqw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
@@ -40,11 +45,11 @@
     <!--
 
 
-TemplateMo 586 Scholar
+    TemplateMo 586 Scholar
 
-https://templatemo.com/tm-586-scholar
+    https://templatemo.com/tm-586-scholar
 
--->
+    -->
     <style>
         @tailwind base;
         @tailwind components;
@@ -62,28 +67,28 @@ https://templatemo.com/tm-586-scholar
 
 
         /* .ag-courses_box {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-align: start;
-            -ms-flex-align: start;
-            align-items: flex-start;
-            -ms-flex-wrap: wrap;
-            flex-wrap: wrap;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-align: start;
+                -ms-flex-align: start;
+                align-items: flex-start;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
 
-            padding: 50px 0;
-        }
+                padding: 50px 0;
+            }
 
-        .ag-courses_item {
-            -ms-flex-preferred-size: calc(33.33333% - 30px);
-            flex-basis: calc(33.33333% - 30px);
-            margin-bottom: 30px;
-            border-radius: 28px;
-            -ms-flex-align: start;
-            align-items: flex-start;
-            -ms-flex-wrap: wrap;
-            overflow-y: auto;
-        } */
+            .ag-courses_item {
+                -ms-flex-preferred-size: calc(33.33333% - 30px);
+                flex-basis: calc(33.33333% - 30px);
+                margin-bottom: 30px;
+                border-radius: 28px;
+                -ms-flex-align: start;
+                align-items: flex-start;
+                -ms-flex-wrap: wrap;
+                overflow-y: auto;
+            } */
 
         .ag-courses_box {
             display: flex;
@@ -275,13 +280,22 @@ https://templatemo.com/tm-586-scholar
                         <!-- ***** Serach Start ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                            <li class="scroll-to-section"><a href="{{ route('welcome') }}#top"
-                                    class="active">Acceuil</a></li>
+                            <li class="scroll-to-section"><a href="{{ route('home') }}#top" class="active">Acceuil</a>
+                            </li>
                             <li class="scroll-to-section"><a href="#mesnotations">Mes notations</a></li>
-                            <li class="scroll-to-section"><a href="{{ route('welcome') }}#courses">Universités</a></li>
+                            <li class="scroll-to-section"><a href="{{ route('home') }}#courses">Universités</a></li>
                             {{-- <li class="scroll-to-section"><a href="#team">Commentaires</a></li> --}}
                             <li class="scroll-to-section"><a href="{{ route('register') }}">S'inscrire</a></li>
-                            <li class="scroll-to-section"><a href="{{ route('login') }}">Login</a></li>
+                            <li class="scroll-to-section">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                        this.closest('form').submit();">
+                                        {{ __('Log out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </li>
                         </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -292,7 +306,65 @@ https://templatemo.com/tm-586-scholar
             </div>
         </div>
     </header>
+    @if (session('success'))
+        <script>
+            // Récupérer le message de succès depuis la variable de session
+            var successMessage = '{{ session('success') }}';
 
+            // Créer une boîte de dialogue personnalisée
+            var successDialog = document.createElement('div');
+            successDialog.classList.add('success-dialog');
+            successDialog.innerHTML = '<div class="success-dialog-content">' + successMessage + '</div>';
+
+            // Ajouter la boîte de dialogue au document
+            document.body.appendChild(successDialog);
+
+            // Fermer la boîte de dialogue après 3 secondes
+            setTimeout(function() {
+                document.body.removeChild(successDialog);
+            }, 3000);
+        </script>
+
+        <style>
+            .success-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #4CAF50;
+                color: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            }
+
+            .success-dialog-content {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+    @endif
+
+    {{-- <style>
+            .success-dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #4CAF50;
+                color: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            }
+
+            .success-dialog-content {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style> --}}
     <div class="main-banner" style="background-color: #35b69f">
         <div class="container">
             <div class="row">
@@ -315,9 +387,12 @@ https://templatemo.com/tm-586-scholar
     </div>
     <div style="display: flex;">
         <section class="container col-md-8 mb-5 mt-5 ml-6" style="overflow-y: auto;">
-            <h1 style="font-size: 40px;" class="mb-3 p-3"><strong>{{ $univ->univ_name }}</strong></h1>
-            {{-- PARTIE DE NOTATION --}}
+            <h1 style="font-size: 40px;" class="mb-3 p-3"><strong>{{ $univ->univ_name }}</strong>
 
+
+            </h1>Type:<span style="background-color: #4c49ea" class="text-sm ml-3">{{ $univ->type }}</span>
+            {{-- PARTIE DE NOTATION --}}
+            <br><br>
 
             <button type="button" data-toggle="modal" data-target="#ratingModal-{{ $univ->id }}"
                 class="flex items-center justify-between px-2 py-1 text-sm font-medium leading-5 text-green-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
@@ -337,7 +412,8 @@ https://templatemo.com/tm-586-scholar
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('notations.store') }}" method="POST">
+                            <form action="{{ route('notations.store', $univ->id) }}" method="POST"
+                                name="notationForm" data-univ-id="{{ $univ->id }}">
                                 @csrf
                                 @foreach ($criteria as $critere)
                                     <h5>{{ $critere->libelle }} :</h5>
@@ -350,7 +426,10 @@ https://templatemo.com/tm-586-scholar
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                            <button type="submit" class="btn btn-primary">Valider</button>
+                            {{-- <button type="submit" id="monBouton"  >Valider</button> --}}
+                            <button type="submit" id="btnValider" class="btn btn-primary"
+                                data-dismiss="modal">Valider</button>
+
                         </div>
                         </form>
                     </div>
@@ -359,319 +438,153 @@ https://templatemo.com/tm-586-scholar
 
 
             {{-- FIN NOTATION --}}
+            <h1 class="text-base my-2">DESCRIPTION</h1>
             <p>{{ $univ->description }}</p>
-            <div class="ag-format-container grid grid-cols-3">
-                @foreach ($univ->formations as $cle => $forma)
-                    <div class="ag-courses_box">
-                        <div class="ag-courses_item">
-                            <a href="#" class="ag-courses-item_link">
-                                <div class="ag-courses-item_bg"></div>
+            <h1 class="text-base my-2">FORMATIONS</h1>
+            <div
+                class="block w-full max-w-[18rem] rounded-lg bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-white">
+                <ul class="w-full">
+                    @foreach ($univ->formations as $cle => $format)
+                        <li class="w-full border-b-2 border-neutral-100 border-opacity-100 p-4  dark:border-white/10">
+                            {{ $format }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
 
-                                <div class="ag-courses-item_title">
-                                    {{ $forma }}
-                                </div>
-                                {{-- 
-                                <div class="ag-courses-item_date-box">
-                                    Start:
-                                    <span class="ag-courses-item_date">
-                                        04.11.2022
-                                    </span>
-                                </div> --}}
-                            </a>
+            <h1>Contacts:</h1>
+            <div
+                class="block w-full max-w-[18rem] rounded-lg bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-white">
+
+
+                <ul class="w-full">
+                    @if (is_array($univ->contacts) && count($univ->contacts) > 0)
+                        @foreach ($univ->contacts as $contact)
+                            <li
+                                class="w-full border-b-2 border-neutral-100 border-opacity-100 p-4  dark:border-white/10">
+                                {{ $contact }}
+                            </li>
+                        @endforeach
+                    @else
+                        <p>Aucun contact disponible.</p>
+                    @endif
+                </ul>
+            </div>
+
+            <div class="mb-3">
+
+                <h1>Sites:</h1>
+
+                <div
+                    class="block w-full max-w-[18rem] rounded-lg bg-white text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-white">
+
+
+                    <ul class="w-full">
+                        @foreach ($univ->websites as $site)
+                            <li
+                                class="w-full border-b-2 border-neutral-100 border-opacity-100 p-4  dark:border-white/10">
+                                {{ $site }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+            </div>
+            <h1>Mes notations</h1><br>
+            <div id="mesnotations" class="mt-10">
+                @include('notations.list')
+            </div>
+        </section>
+
+        <div class="container mt-5 mb-5 col-md-4" style="overflow-y: auto;">
+
+            <div class="row height d-flex align-items-start">
+
+                <div class="comments-container" style="margin-left: auto;">
+
+                    <div class="card">
+
+                        <div class="p-3">
+
+                            <h6>Commentaires</h6>
+
                         </div>
-                @endforeach
-                {{-- <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
 
-                            <div class="ag-courses-item_title">
-                                UX/UI Web-Design&#160;+ Mobile Design
-                            </div>
+                        <div class="mt-3 d-flex flex-row align-items-center p-3 form-color">
+                            <form action="{{ route('comments.store') }}" method="post">
+                                @csrf
+                                <textarea name="content" class="form-control" id="" cols="30"
+                                    placeholder="Entrez votre commentaire..." rows="5"></textarea>
+                                <input type="hidden" name="univ_id" value="{{ $univ_id }}" id="">
+                                <button type="submit"
+                                    style="background-color: #35b69f;color:white;border-radius:5px;border-width:0;margin-top:10px;">Poster</button>
+                            </form>
+                            {{-- <img src="https://i.imgur.com/zQZSWrt.jpg" width="50" class="rounded-circle mr-2"> --}}
 
-                            <div class="ag-courses-item_date-box">
-                                Start:
-                                <span class="ag-courses-item_date">
-                                    04.11.2022
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
-
-                            <div class="ag-courses-item_title">
-                                Annual package "Product+UX/UI+Graph designer&#160;2022"
-                            </div>
-
-                            <div class="ag-courses-item_date-box">
-                                Start:
-                                <span class="ag-courses-item_date">
-                                    04.11.2022
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
-
-                            <div class="ag-courses-item_title">
-                                Graphic Design
-                            </div>
-
-                            <div class="ag-courses-item_date-box">
-                                Start:
-                                <span class="ag-courses-item_date">
-                                    04.11.2022
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
-
-                            <div class="ag-courses-item_title">
-                                Motion Design
-                            </div>
-
-                            <div class="ag-courses-item_date-box">
-                                Start:
-                                <span class="ag-courses-item_date">
-                                    30.11.2022
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
-
-                            <div class="ag-courses-item_title">
-                                Front-end development&#160;+ jQuery&#160;+ CMS
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg">
-                            </div>
-                            <div class="ag-courses-item_title">
-                                Digital Marketing
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="ag-courses_item">
-                        <a href="#" class="ag-courses-item_link">
-                            <div class="ag-courses-item_bg"></div>
-
-                            <div class="ag-courses-item_title">
-                                Interior Design
-                            </div>
-
-                            <div class="ag-courses-item_date-box">
-                                Start:
-                                <span class="ag-courses-item_date">
-                                    31.10.2022
-                                </span>
-                            </div>
-                        </a>
-                    </div> --}}
-
-            </div>
-    </div>
-    <div id="mesnotations">
-
-        @foreach ($notations->groupBy('univ_id') as $univId => $univNotations)
-            @php
-                $universityName = \App\Models\University::find($univId)->univ_name;
-            @endphp
-            <div class="university">
-                <h3>Université: {{ $universityName }}</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Critère</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($univNotations as $notation)
-                            <tr>
-                                <td>{{ $notation->criteria->libelle }}</td>
-                                <td>{{ $notation->score }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endforeach
-    </div>
-    </section>
-
-    <div class="container mt-5 mb-5 col-md-4" style="overflow-y: auto;">
-
-        <div class="row height d-flex align-items-start">
-
-            <div class="comments-container" style="margin-left: auto;">
-
-                <div class="card">
-
-                    <div class="p-3">
-
-                        <h6>Commentaires</h6>
-
-                    </div>
-
-                    <div class="mt-3 d-flex flex-row align-items-center p-3 form-color">
-                        <form action="{{ route('comments.store') }}" method="post">
-                            @csrf
-                            <textarea name="content" class="form-control" id="" cols="30"
-                                placeholder="Entrez votre commentaire..." rows="5"></textarea>
-                            <input type="hidden" name="univ_id" value="{{ $univ_id }}" id="">
-                            <button type="submit"
-                                style="background-color: #35b69f;color:white;border-radius:5px;border-width:0;margin-top:10px;">Poster</button>
-                        </form>
-                        {{-- <img src="https://i.imgur.com/zQZSWrt.jpg" width="50" class="rounded-circle mr-2"> --}}
-
-                    </div>
+                        </div>
 
 
-                    <div class="mt-2">
-                        @foreach ($comments as $key => $comment)
-                            <div class="d-flex flex-row p-3">
+                        <div class="mt-2">
+                            @foreach ($comments as $key => $comment)
+                                <div class="d-flex flex-row p-3">
 
-                                {{-- <img src="https://i.imgur.com/zQZSWrt.jpg" width="40" height="40" --}}
-                                {{-- class="rounded-circle mr-3"> --}}
+                                    {{-- <img src="https://i.imgur.com/zQZSWrt.jpg" width="40" height="40" --}}
+                                    {{-- class="rounded-circle mr-3"> --}}
 
-                                <div class="w-100">
+                                    <div class="w-100">
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex flex-row align-items-center">
-                                            <span class="mr-2">
-                                                @php
-                                                    $user = Auth::user();
-                                                @endphp
-                                                @if ($user->name == $authors[$key]->name)
-                                                    <span style="background-color: rgb(218, 255, 218)">Vous</span>
-                                                @else
-                                                    {{ $authors[$key]->name }}
-                                                @endif
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <span class="mr-2">
+                                                    @php
+                                                        $user = Auth::user();
+                                                    @endphp
+                                                    @if ($user->name == $authors[$key]->name)
+                                                        <span style="background-color: rgb(218, 255, 218)">Vous</span>
+                                                    @else
+                                                        {{ $authors[$key]->name }}
+                                                    @endif
 
 
-                                            </span>
-                                            {{-- <small class="c-badge">Top Comment</small> --}}
+                                                </span>
+                                                {{-- <small class="c-badge">Top Comment</small> --}}
+                                            </div>
+                                            <small>{{ $comment->upload_date }}</small>
                                         </div>
-                                        <small>{{ $comment->upload_date }}</small>
+
+                                        <p class="text-justify comment-text mb-0">{{ $comment->content }}</p>
+                                        @if ($user->name == $authors[$key]->name)
+                                            <div class="d-flex flex-row user-feed">
+                                                <form action="{{ route('comments.delete', $comment->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('delete')
+
+                                                    <button type="submit"
+                                                        class="flex bg-red-200 border-0 items-center justify-between text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                                                        aria-label="Delete" style="background-color: red"
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')">
+                                                        Supprimer
+                                                    </button>
+                                                </form>
+
+
+                                            </div>
+                                        @endif
                                     </div>
 
-                                    <p class="text-justify comment-text mb-0">{{ $comment->content }}</p>
-
-                                    <div class="d-flex flex-row user-feed">
-
-                                        <span class="wish"><i class="fa fa-heartbeat mr-2"></i>24</span>
-                                        <span class="ml-3"><i class="fa fa-comments-o mr-2"></i>Reply</span>
-
-
-                                    </div>
 
                                 </div>
+                            @endforeach
 
-
-                            </div>
-                        @endforeach
-
-                        {{--  <div class="d-flex flex-row p-3">
-
-                                <img src="https://i.imgur.com/3J8lTLm.jpg" width="40" height="40"
-                                class="rounded-circle mr-3"> 
-
-                                <div class="w-100">
-
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex flex-row align-items-center">
-                                            <span class="mr-2">Seltos Majito</span>
-                                            <small class="c-badge">Top Comment</small>
-                                        </div>
-                                        <small>2h ago</small>
-                                    </div>
-
-                                    <p class="text-justify comment-text mb-0">Tellus in hac habitasse platea dictumst
-                                        vestibulum. Lectus nulla at volutpat diam ut venenatis tellus. Aliquam etiam
-                                        erat
-                                        velit scelerisque in dictum non consectetur. Sagittis nisl rhoncus mattis
-                                        rhoncus
-                                        urna neque viverra justo nec. Tellus cras adipiscing enim eu turpis egestas
-                                        pretium
-                                        aenean pharetra. Aliquam faucibus purus in massa.</p>
-
-                                    <div class="d-flex flex-row user-feed">
-
-                                        <span class="wish"><i class="fa fa-heartbeat mr-2"></i>14</span>
-                                        <span class="ml-3"><i class="fa fa-comments-o mr-2"></i>Reply</span>
-
-
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-
-
-
-                            <div class="d-flex flex-row p-3">
-
-                                {{-- <img src="https://i.imgur.com/agRGhBc.jpg" width="40" height="40"
-                                class="rounded-circle mr-3"> 
-
-                                <div class="w-100">
-
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex flex-row align-items-center">
-                                            <span class="mr-2">Maria Santola</span>
-                                            <small class="c-badge">Top Comment</small>
-                                        </div>
-                                        <small>12h ago</small>
-                                    </div>
-
-                                    <p class="text-justify comment-text mb-0"> Id eu nisl nunc mi ipsum faucibus. Massa
-                                        massa ultricies mi quis hendrerit dolor. Arcu bibendum at varius vel pharetra
-                                        vel
-                                        turpis nunc eget. Habitasse platea dictumst quisque sagittis purus sit amet
-                                        volutpat. Urna condimentum mattis pellentesque id.Lorem ipsum dolor sit amet,
-                                        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                                        dolore
-                                        magna aliqua. Ut enim ad minim veniam</p>
-
-                                    <div class="d-flex flex-row user-feed">
-
-                                        <span class="wish"><i class="fa fa-heartbeat mr-2"></i>54</span>
-                                        <span class="ml-3"><i class="fa fa-comments-o mr-2"></i>Reply</span>
-
-
-                                    </div>
-
-                                </div>
-
-
-                            </div> --}}
+                        </div>
 
                     </div>
 
                 </div>
-
             </div>
-        </div>
 
-    </div>
+        </div>
     </div>
 
     <footer>
@@ -686,8 +599,14 @@ https://templatemo.com/tm-586-scholar
 
     <!-- Scripts -->
     <!-- Bootstrap core JavaScript -->
-    {{-- <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script> --}}
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <script src="{{ asset('js/note.js') }}"></script>
     <script src="{{ asset('js/isotope.min.js') }}"></script>
     <script src="{{ asset('js/owl-carousel.js') }}"></script>
     <script src="{{ asset('js/counter.js') }}"></script>
@@ -705,6 +624,7 @@ https://templatemo.com/tm-586-scholar
                 nextEl: ".swiper-button-next",
                 prevEl: ".swiper-button-prev",
             },
+
             breakpoints: {
                 // Paramètres de la responsive
                 640: {
@@ -721,50 +641,48 @@ https://templatemo.com/tm-586-scholar
                 },
             },
         });
+    </script>
 
+    <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {}
             }
         }
-
-
-
+    </script>
+    <script>
         $(document).ready(function() {
-                    // Soumettre le formulaire via AJAX lorsqu'il est soumis
-                    $('form[action="{{ route('notations.store') }}"]').submit(function(e) {
-                        e.preventDefault();
-                        var formData = $(this).serialize();
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            type: 'POST',
-                            data: formData,
-                            success: function(data) {
-                                // Afficher un message de succès
-                                showSuccessModal('Notation enregistrée avec succès !');
-                                // Fermer le modal
-                                $('#ratingModal-{{ $univ->id }}').modal('hide');
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                                alert(
-                                    'Une erreur est survenue lors de l\'enregistrement de la notation.'
-                                );
-                            }
-                        });
-                    });
-                    // function showSuccessModal(message) {
-                    //     var modal = document.getElementById('successModal');
-                    //     var successMessage = document.getElementById('successMessage');
-                    //     successMessage.innerText = message;
-                    //     modal.classList.remove('hidden');
-                    // }
+            // Soumettre le formulaire via AJAX lorsqu'il est soumis
+            $('form[name="notationForm"]').submit(function(e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                var univId = $(this).data('univ-id');
+                // Récupérer l'ID de l'université
+                console.log(univId);
+                $.ajax({
+                    url: '/notations/store/' + univId, // Utiliser l'ID de l'université dans l'URL
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        // Afficher un message de succès
+                        showSuccessModal('Notation enregistrée avec succès !');
+                        // Fermer le modal
+                        $('#ratingModal-' + univId).modal('hide');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert(
+                            'Une erreur est survenue lors de l\'enregistrement de la notation.'
+                        );
+                    }
+                });
 
-                    // function hideSuccessModal() {
-                    //     var modal = document.getElementById('successModal');
-                    //     modal.classList.add('hidden');
-                }
+            });
+        });
     </script>
 
 </body>

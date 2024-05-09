@@ -9,6 +9,8 @@ use Illuminate\Support\Composer;
 
 class NotationController extends Controller
 {
+
+
     public function list()
     {
         $user = Auth::user();
@@ -21,41 +23,67 @@ class NotationController extends Controller
         $notations = Notation::all();
         return view('notations.create', ['notations' => $notations]);
     }
-    public function store(Request $request)
-    {
+    // public function store(Request $request, $univ_id)
+    // {
+        
+    //     // dd($request->all());
+    //     // // Récupérer l'ID de l'utilisateur à partir de la session
+    //     // $user_id = auth()->id();
 
-        $univ_id = $request->input('univ_id');
-        $user_id = $request->input('user_id');
-        $scores = $request->input('scores');
-        foreach ($scores as $critere_id => $score) {
-            $noteExiste = Notation::where('users_id', $user_id)
-                ->where('univ_id', $univ_id)
-                ->where('criteria_id', $critere_id)
-                ->first();
-            if ($noteExiste) {
-                $noteExiste->score = $score;
-                $noteExiste->save();
-            } else {
-                $notation = new Notation();
-                $notation->criteria_id = $critere_id;
-                $notation->univ_id = $univ_id;
-                $notation->users_id = $user_id;
-                $notation->score = $score;
-                $notation->save();
-            }
+    //     // // Récupérer les scores à partir de la demande
+    //     // $scores = $request->input('scores');
+
+    //     // // Parcourir les scores et les enregistrer dans la base de données
+    //     // foreach ($scores as $critere_id => $score) {
+    //     //     // Rechercher si une notation existe déjà pour ce critère, cet utilisateur et cette université
+    //     //     $notation = Notation::where('users_id', $user_id)
+    //     //         ->where('univ_id', $univ_id)
+    //     //         ->where('criteria_id', $critere_id)
+    //     //         ->first();
+
+    //     //     // Si une notation existe, mettre à jour le score
+    //     //     if ($notation) {
+    //     //         $notation->score = $score;
+    //     //         $notation->save();
+    //     //     } else {
+    //     //         // Sinon, créer une nouvelle notation
+    //     //         $notation = new Notation();
+    //     //         $notation->criteria_id = $critere_id;
+    //     //         $notation->univ_id = $univ_id;
+    //     //         $notation->users_id = $user_id;
+    //     //         $notation->score = $score;
+    //     //         $notation->save();
+    //     //     }
+    //     // }
+
+    //     // // Rediriger avec un message de succès
+    //     // return back()->with('success', 'Notations enregistrées avec succès');
+    // }
+
+    public function store(Request $request, $univId)
+    {
+        // Validez les données du formulaire
+        $validatedData = $request->validate([
+            // Ajoutez les règles de validation selon vos besoins
+            'scores.*' => 'required|numeric|min:0|max:100',
+            'univ_id' => 'required|exists:universities,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        // Enregistrez les données dans la base de données
+        foreach ($validatedData['scores'] as $critereId => $score) {
+            Notation::create([
+                'univ_id' => $validatedData['univ_id'],
+                'user_id' => $validatedData['user_id'],
+                'critere_id' => $critereId,
+                'score' => $score,
+            ]);
         }
 
-        return back()->with('success', 'Notations enregistrée avec succes');
-        // $notation = new Notation();
-        // $user = Auth::user();
-        // $data = $request->all();
-        // $notation->users_id = $user->id;
-        // $notation->score = $request->score;
-        // $notation->university()->associate($data['univ_id']); // Assurez-vous que la clé étrangère est correctement définie dans votre modèle Notation
-        // $notation->criteria()->associate($data['criteria_id']); // Assurez-vous que la clé étrangère est correctement définie dans votre modèle Notation
-        // $notation->save();
-        // return back();
+        // Redirigez l'utilisateur après l'enregistrement
+        return redirect()->back()->with('success', 'Notation enregistrée avec succès');
     }
+
     public function edit(int $id)
     {
         $city = Notation::find($id);

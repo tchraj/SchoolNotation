@@ -25,7 +25,7 @@ class CityController extends Controller
         $city = new City();
         $city->city_name = $request->city_name;
         $city->save();
-        return back();
+        return back()->with('success', 'Opération éffectuée avec succès');
         // return view('cities.create');
     }
     public function edit(int $id)
@@ -38,7 +38,7 @@ class CityController extends Controller
         $city = City::find($id);
         $city->city_name = $request->city_name;
         $city->save();
-        return redirect()->route('cities.list');
+        return redirect()->route('cities.list')->with('success', 'Opération éffectuée avec succès');
     }
     public function delete($id)
     {

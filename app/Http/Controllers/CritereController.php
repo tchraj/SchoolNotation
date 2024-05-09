@@ -26,7 +26,7 @@ class CritereController extends Controller
         $critere->libelle = $request->libelle;
         $critere->description = $request->description;
         $critere->save();
-        return back();
+        return back()->with('success', 'Opération éffectuée avec succès');
     }
     public function edit(int $id)
     {
@@ -38,7 +38,7 @@ class CritereController extends Controller
         $city = Critere::find($id);
         $city->city_name = $request->city_name;
         $city->save();
-        return redirect()->route('criteria.list');
+        return redirect()->route('criteria.list')->with('success', 'Opération éffectuée avec succès');
     }
     public function delete($id)
     {
